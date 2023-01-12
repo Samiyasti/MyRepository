@@ -34,7 +34,10 @@ class MyController {
 
     @DeleteMapping("/deleteuser/{username}")
     fun deleteUser(@PathVariable("username") username: String):ResponseEntity<String>{
-            appUserRepository.deleteByUsername(username)
+            var noOfDeletedUser:Long=appUserRepository.deleteByUsername(username)
+            if(noOfDeletedUser.toInt() ==0){
+                return ResponseEntity.ok().body("User with $username not found")
+            }
             return ResponseEntity.ok().body("$username deleted successfully")
     }
 
