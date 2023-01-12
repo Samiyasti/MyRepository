@@ -23,5 +23,9 @@ class SecurityConfig :WebSecurityConfigurerAdapter() {
 
     override fun configure(http: HttpSecurity) {
         http.csrf().disable()
+            .authorizeRequests().antMatchers("/user/adduser").hasRole("ADMIN")
+            .antMatchers("/user/deleteuser").hasRole("ADMIN").and().httpBasic()
+            .and().authorizeRequests()
+            .antMatchers("/user/home/**").permitAll().anyRequest().authenticated()
     }
 }
