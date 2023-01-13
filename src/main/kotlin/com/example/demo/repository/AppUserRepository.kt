@@ -5,7 +5,8 @@ import org.springframework.data.jpa.repository.JpaRepository
 
 interface AppUserRepository : JpaRepository<AppUser, String> {
 
-    fun findByUsername(userName: String): AppUser
+    fun findByUsername(userName: String): List<AppUser>
 
     fun deleteByUsername(userName: String): Long
+
 }

@@ -8,12 +8,13 @@ import org.springframework.security.core.userdetails.User
 import org.springframework.security.core.userdetails.UserDetails
 import org.springframework.security.core.userdetails.UserDetailsService
 import org.springframework.stereotype.Service
+
 @Service
-class AppUserDetailsService :UserDetailsService {
+class AppUserDetailsService : UserDetailsService {
     @Autowired
     lateinit var appUserRepository: AppUserRepository
     override fun loadUserByUsername(username: String): UserDetails {
-        var appUser:AppUser=appUserRepository.findByUsername(username)
-        return User(appUser.username,appUser.password, arrayListOf(SimpleGrantedAuthority("ROLE_${appUser.role}")))
+        var appUser: AppUser = appUserRepository.findByUsername(username)[0]
+        return User(appUser.username, appUser.password, arrayListOf(SimpleGrantedAuthority("ROLE_${appUser.role}")))
     }
 }

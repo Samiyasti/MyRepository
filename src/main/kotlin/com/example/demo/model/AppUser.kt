@@ -1,9 +1,7 @@
 package com.example.demo.model
 
 import java.util.*
-import javax.persistence.Column
-import javax.persistence.Entity
-import javax.persistence.Id
+import javax.persistence.*
 
 @Entity(name = "app_users")
 data class AppUser(
@@ -18,5 +16,7 @@ data class AppUser(
     @Column(nullable = false)
     var password: String = "",
     @Column(nullable = false)
-    var role: String = "USER"
+    var role: String = "USER",
+    @OneToMany(mappedBy = "appUser", fetch = FetchType.EAGER)
+    var address: List<AppUserAddress> = ArrayList()
 )
