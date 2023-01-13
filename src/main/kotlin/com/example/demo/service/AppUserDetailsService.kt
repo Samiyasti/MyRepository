@@ -13,8 +13,11 @@ import org.springframework.stereotype.Service
 class AppUserDetailsService : UserDetailsService {
     @Autowired
     lateinit var appUserRepository: AppUserRepository
+    lateinit var userDetails: UserDetails
     override fun loadUserByUsername(username: String): UserDetails {
-        var appUser: AppUser = appUserRepository.findByUsername(username)[0]
-        return User(appUser.username, appUser.password, arrayListOf(SimpleGrantedAuthority("ROLE_${appUser.role}")))
+        var appUser: AppUser = appUserRepository.findByUsername(username)
+        userDetails =
+            User(appUser.username, appUser.password, arrayListOf(SimpleGrantedAuthority("ROLE_${appUser.role}")))
+        return userDetails
     }
 }

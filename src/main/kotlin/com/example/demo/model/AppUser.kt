@@ -18,5 +18,12 @@ data class AppUser(
     @Column(nullable = false)
     var role: String = "USER",
     @OneToMany(mappedBy = "appUser", fetch = FetchType.EAGER, cascade = [CascadeType.ALL])
-    var address: List<AppUserAddress> = ArrayList()
+    var address: List<AppUserAddress> = ArrayList(),
+    @ManyToMany(cascade = [CascadeType.ALL])
+    @JoinTable(
+        name = "user_store",
+        joinColumns = [JoinColumn(name = "app_user_id")],
+        inverseJoinColumns = [JoinColumn(name = "store_id")]
+    )
+    var store: List<UserStore> = ArrayList()
 )

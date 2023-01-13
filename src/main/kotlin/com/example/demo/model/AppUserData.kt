@@ -5,6 +5,7 @@ data class AppUserData(
     var firstName: String = "",
     var lastName: String = "",
     var password: String = "",
+    var role:String="",
     var address: List<String> =ArrayList<String>()
 )
 
