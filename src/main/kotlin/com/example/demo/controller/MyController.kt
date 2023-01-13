@@ -42,17 +42,16 @@ class MyController {
             firstName = userData.firstName,
             password = userData.password,
         )
-        appUserRepository.save(user)
         var listOfAddress= ArrayList<AppUserAddress>()
         userData.address.forEach{address->
             run {
                 listOfAddress.add(
-                    appUserAddressRepository.save(
+
                         AppUserAddress(
                             address = address,
                             appUser = user
                         )
-                    )
+
                 )
             }
         }

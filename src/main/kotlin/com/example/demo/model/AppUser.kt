@@ -17,6 +17,6 @@ data class AppUser(
     var password: String = "",
     @Column(nullable = false)
     var role: String = "USER",
-    @OneToMany(mappedBy = "appUser", fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "appUser", fetch = FetchType.EAGER, cascade = [CascadeType.ALL])
     var address: List<AppUserAddress> = ArrayList()
 )
