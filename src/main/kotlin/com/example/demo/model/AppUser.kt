@@ -1,5 +1,6 @@
 package com.example.demo.model
 
+import com.fasterxml.jackson.annotation.JsonIgnore
 import java.util.*
 import javax.persistence.*
 
@@ -19,11 +20,18 @@ data class AppUser(
     var role: String = "USER",
     @OneToMany(mappedBy = "appUser", fetch = FetchType.EAGER, cascade = [CascadeType.ALL])
     var address: List<AppUserAddress> = ArrayList(),
-    @ManyToMany(cascade = [CascadeType.ALL])
+    @ManyToMany(
+        cascade = [
+            CascadeType.PERSIST,
+            CascadeType.MERGE,
+            CascadeType.REFRESH,
+            CascadeType.DETACH]
+    )
     @JoinTable(
         name = "user_store",
         joinColumns = [JoinColumn(name = "app_user_id")],
         inverseJoinColumns = [JoinColumn(name = "store_id")]
     )
-    var store: List<UserStore> = ArrayList()
+    var store: MutableList<UserStore> = ArrayList()
+
 )
