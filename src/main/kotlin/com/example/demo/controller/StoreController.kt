@@ -6,17 +6,11 @@ import com.example.demo.model.UserStore
 import com.example.demo.repository.AppUserRepository
 import com.example.demo.repository.UserStoreRepository
 import com.example.demo.service.AppUserDetailsService
-import com.fasterxml.jackson.annotation.JsonIgnore
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.dao.EmptyResultDataAccessException
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
-import org.springframework.web.bind.annotation.DeleteMapping
-import org.springframework.web.bind.annotation.PathVariable
-import org.springframework.web.bind.annotation.PostMapping
-import org.springframework.web.bind.annotation.RequestBody
-import org.springframework.web.bind.annotation.RequestMapping
-import org.springframework.web.bind.annotation.RestController
+import org.springframework.web.bind.annotation.*
 import javax.transaction.Transactional
 
 @RestController
@@ -57,7 +51,25 @@ class StoreController {
     ): ResponseEntity<String> {
         var store =
             userStoreRepository.findUserStoreByStoreNameAndUser(storename, appUserRepository.findByUsername(username))
-        userStoreRepository.deleteUserStoreByStoreNameAndAndUser(storename,appUserRepository.findByUsername(username))
+        var user = appUserRepository.findByUsername(username).removeStore(store)
+        appUserRepository.save(user)
         return ResponseEntity("$storename for user $username has been deleted successfully", HttpStatus.ACCEPTED)
+    }
+
+    @GetMapping("/findmystore/{username}/{storename}")
+    fun findMyStore(
+        @PathVariable("username") username: String,
+        @PathVariable("storename") storename: String
+    ): List<UserStore> {
+        var store = userStoreRepository.findUserStoreByStoreNameAndUser(
+            storename = storename,
+            user = appUserRepository.findByUsername(username)
+        )
+        return store;
+    }
+
+    @GetMapping("/findmystores")
+    fun findMyStores(): List<UserStore> {
+        return userStoreRepository.findUserStoresByUser(appUserRepository.findByUsername(userDetailsService.userDetails.username))
     }
 }

@@ -1,6 +1,5 @@
 package com.example.demo.model
 
-import com.fasterxml.jackson.annotation.JsonIgnore
 import java.util.*
 import javax.persistence.*
 
@@ -34,4 +33,14 @@ data class AppUser(
     )
     var store: MutableList<UserStore> = ArrayList()
 
-)
+) {
+    fun removeStore(store: List<UserStore>): AppUser {
+        store.forEach { store ->
+            run {
+                this.store.remove(store)
+                store.user.remove(this)
+            }
+        }
+        return this
+    }
+}

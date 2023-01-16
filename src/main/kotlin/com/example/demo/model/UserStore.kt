@@ -3,7 +3,6 @@ package com.example.demo.model
 import com.fasterxml.jackson.annotation.JsonIgnore
 import java.util.*
 import javax.persistence.*
-import kotlin.collections.ArrayList
 
 @Entity(name = "app_user_store")
 data class UserStore(
@@ -19,6 +18,5 @@ data class UserStore(
         fetch = FetchType.EAGER,
         cascade = [CascadeType.ALL]
     )
-    //@Column(nullable = false)
     var user: MutableList<AppUser> = ArrayList()
 )
