@@ -8,6 +8,7 @@ import com.example.demo.model.AppUserData
 import com.example.demo.repository.AppUserAddressRepository
 import com.example.demo.repository.AppUserRepository
 import com.example.demo.service.AppUserDetailsService
+import org.springframework.amqp.core.AmqpTemplate
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.dao.EmptyResultDataAccessException
 import org.springframework.http.HttpStatus
@@ -32,9 +33,13 @@ class MyController {
     @Autowired
     lateinit var userDetailsService: AppUserDetailsService
 
+    @Autowired
+    lateinit var template: AmqpTemplate
+
     @GetMapping("/{username}")
     fun getUserByUserName(@PathVariable("username") username: String): AppUser {
         try {
+            template.convertAndSend("QueueA",appUserRepository.findByUsername(username))
             return appUserRepository.findByUsername(username)
         } catch (ex: EmptyResultDataAccessException) {
             throw UsernameNotPresentException(exceptionMessage = "$username not found")
@@ -119,10 +124,13 @@ class MyController {
     @DeleteMapping("/delete user/{username}")
     @Transactional
     fun deleteUser(@PathVariable("username") username: String): ResponseEntity<String> {
-        var noOfDeletedUser: Long = appUserRepository.deleteByUsername(username)
-        if (noOfDeletedUser.toInt() == 0) {
-            return ResponseEntity.ok().body("User with $username not found")
-        }
+        if (userDetailsService.userDetails.username.equals(username)) {
+            var noOfDeletedUser: Long = appUserRepository.deleteByUsername(username)
+            if (noOfDeletedUser.toInt() == 0) {
+                return ResponseEntity.ok().body("User with $username not found")
+            }
+        } else
+            throw UserMisMatchException("Please login using user $username")
         return ResponseEntity.ok().body("$username deleted successfully")
     }
 
